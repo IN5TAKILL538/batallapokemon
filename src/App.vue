@@ -2,6 +2,7 @@
 import axios from "axios";
 import { ref } from "vue";
 
+
 let nombre = ref("");
 let image = ref("");
 let numpokedex = ref("");
@@ -33,6 +34,8 @@ let statsspeed2 = ref("");
 
 let contador1 = 0
 let contador2 = 0
+let pokeganador = ref();
+let entrenadorganador = ref("")
 
 function numerospokedex() {
   numeros1.value = []; // Limpia el arreglo antes de llenarlo
@@ -46,17 +49,26 @@ function numerospokedex() {
     console.log(numeroAleatorio1);
     console.log(numeroAleatorio2);
   }
-  
+
 }
 
 async function listarPokemon() {
-  const boton = document.getElementById("iniciar");
-  document.getElementById("nextcombat").style.display="block"
-  boton.disabled = true;
+  document.body.style.height = "auto";
+  document.getElementById("cuerpo").style.display = "flex"
+  document.getElementById("header").style.display = "none"
+  document.getElementById("nextcombat").style.display = "block"
+  document.getElementById("resultadolocal").style.display = "block"
+
+
   // Obtener el número de Pokémon a mostrar
   numi.value = parseInt(document.getElementById("numpokemon").value); // Asegúrate de que numi sea un número
   console.log(numi.value);
-  
+
+  document.getElementById("contador").style.display = "flex"
+  document.getElementById("contador2").style.display = "flex"
+
+
+
   // Llenar los números aleatorios
   numerospokedex();
 
@@ -93,70 +105,80 @@ async function listarPokemon() {
 
       i.value++; // Incrementa i después de obtener los datos
       compararEstadisticas()
+
     } catch (error) {
       alert("Ocurrió un error al obtener los datos. Por favor, inténtalo de nuevo.");
     }
   } else {
-    
-  }
-  
-}
-function compararEstadisticas() {
-  const tipoBatalla = document.getElementById("batalla").value;
+    if (contador1 < contador2) {
+      entrenadorganador.value = "el Ganador es el entrendor #1"
+    }
+    else if (contador1 > contador2) {
+      entrenadorganador.value = "el Ganador es el entrendor #2"
+    }
+    else {
+      entrenadorganador.value = "EMPATE"
+    }
 
-  let statPokemon1, statPokemon2;
-  let ganador;
 
-  switch (tipoBatalla) {
-    case "total":
-    statPokemon1 = parseInt(stats.value);
-    statPokemon2 = parseInt(stats2.value);
-    break;
-    case "hp":
-      statPokemon1 = parseInt(statshp.value);
-      statPokemon2 = parseInt(statshp2.value);
-      break;
-    case "attack":
-      statPokemon1 = parseInt(statsatk.value);
-      statPokemon2 = parseInt(statsatk2.value);
-      break;
-    case "defense":
-      statPokemon1 = parseInt(statsdf.value);
-      statPokemon2 = parseInt(statsdf2.value);
-      break;
-    case "special-attack":
-      statPokemon1 = parseInt(statsatksp.value);
-      statPokemon2 = parseInt(statsatksp2.value);
-      break;
-    case "special-defense":
-      statPokemon1 = parseInt(statsdfsp.value);
-      statPokemon2 = parseInt(statsdfsp2.value);
-      break;
-    case "speed":
-      statPokemon1 = parseInt(statsspeed.value);
-      statPokemon2 = parseInt(statsspeed2.value);
-      break;
-    default:
-      return; // Si no hay selección válida, salir
   }
+  function compararEstadisticas() {
+    const tipoBatalla = document.getElementById("batalla").value;
 
-  if (statPokemon1 > statPokemon2) {
-    ganador = "${nombre.value} gana con ${statPokemon1} ${tipoBatalla}!";
-    contador1++
-  } else if (statPokemon1 < statPokemon2) {
-    ganador = '${nombre2.value} gana con ${statPokemon2} ${tipoBatalla}!';
-    contador2++
-  } else {
-    ganador = "Es un empate!";
+    let statPokemon1, statPokemon2;
+    let ganador;
+
+    switch (tipoBatalla) {
+      case "total":
+        statPokemon1 = parseInt(stats.value);
+        statPokemon2 = parseInt(stats2.value);
+        break;
+      case "hp":
+        statPokemon1 = parseInt(statshp.value);
+        statPokemon2 = parseInt(statshp2.value);
+        break;
+      case "attack":
+        statPokemon1 = parseInt(statsatk.value);
+        statPokemon2 = parseInt(statsatk2.value);
+        break;
+      case "defense":
+        statPokemon1 = parseInt(statsdf.value);
+        statPokemon2 = parseInt(statsdf2.value);
+        break;
+      case "special-attack":
+        statPokemon1 = parseInt(statsatksp.value);
+        statPokemon2 = parseInt(statsatksp2.value);
+        break;
+      case "special-defense":
+        statPokemon1 = parseInt(statsdfsp.value);
+        statPokemon2 = parseInt(statsdfsp2.value);
+        break;
+      case "speed":
+        statPokemon1 = parseInt(statsspeed.value);
+        statPokemon2 = parseInt(statsspeed2.value);
+        break;
+      default:
+        return; // Si no hay selección válida, salir
+    }
+
+    if (statPokemon1 > statPokemon2) {
+      ganador = nombre.value + ' gana con ' + statPokemon1 + ' ' + tipoBatalla + ' sobre ' + statPokemon2 + ' de ' + nombre2.value;
+      contador1++
+    } else if (statPokemon1 < statPokemon2) {
+      ganador = nombre2.value + ' gana con ' + statPokemon2 + ' ' + tipoBatalla + ' cotra ' + statPokemon1 + ' de ' + nombre.value;
+      contador2++
+    } else {
+      ganador = "Es un empate!";
+    }
+    pokeganador.value = ganador
+    // Muestra el resultado en un alert
   }
-  
-   // Muestra el resultado en un alert
 }
 </script>
 
 <template>
   <div class="contenedor">
-    <div class="header">
+    <div class="header" id="header">
       <img src="" alt="">
       <select name="numpokemon" id="numpokemon">
         <option value="1">1</option>
@@ -177,37 +199,67 @@ function compararEstadisticas() {
       </select>
       <button id="iniciar" @click="listarPokemon()">INICIAR</button>
     </div>
-    <div class="cuerpo">
+    <div class="cuerpo" id="cuerpo">
       <div class="pokemon" id="poke1">
-        <div><h1>{{ contador1 }}</h1></div>
+        <div class="contador" id="contador">
+          <h1>{{ contador1 }}</h1>
+        </div>
         <div id="name1">{{ nombre }}</div>
         <img :src="image" alt="" class="imgpoke">
       </div>
-      <img src="https://pm1.aminoapps.com/6451/08ef2400e95ad4f34b3f61be0bdf4f66927a6be0_00.jpg" alt="">
+      <div class="pokemon"><img src="https://i.pinimg.com/originals/38/e6/8c/38e68c4baccbd17cc50aa752810a1301.gif"
+          alt="" id="vs"></div>
       <div class="pokemon" id="poke2">
-        <div><h1>{{ contador2 }}</h1></div>
+        <div class="contador" id="contador2">
+          <h1>{{ contador2 }}</h1>
+        </div>
         <div id="name2">{{ nombre2 }}</div>
         <img :src="image2" alt="" class="imgpoke">
       </div>
-     
+
     </div>
     <div class="btnnext"><button id="nextcombat" @click="listarPokemon()">Siguiente Combate</button></div>
+    <button id="resultadolocal">{{ pokeganador }}</button> <br>
+    <button id="resultadoglobal">{{ entrenadorganador }}</button>
   </div>
 </template>
 
 <style>
-.container {
-  display: flex;
+body {
+  height: 100vh;
+  width: 100%;
+  background-image: url(./img/estadio.jpeg);
+  background-position: center;
+  background-size: cover;
 }
 
-.cuerpo {
-  display: flex;
-  flex-direction: row;
+.contador {
+  display: none;
   align-items: center;
   justify-content: center;
 }
 
+.contenedor {
+  height: 100%;
+  width: 100%;
+}
+
+#vs {
+  height: 60px;
+  width: 60px;
+  opacity: 0.6;
+}
+
+.cuerpo {
+  display: none;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
 .header {
+
   display: flex;
   justify-content: center;
   flex-direction: column;
@@ -228,13 +280,35 @@ function compararEstadisticas() {
   width: 100px;
   height: 20px;
 }
-#nextcombat{
+
+#nextcombat {
   display: none;
-  
+
 }
-.btnnext{
+
+.btnnext {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+@media (max-width: 660px) {
+
+  .imgpoke {
+    width: 120px;
+    height: 120px;
+  }
+}
+#resultadolocal{
+  display: none;
+  font-family:cursive;
+  background-color: black;
+  color: white;
+}
+#resultadoglobal{
+  display: none;
+  font-family:cursive;
+  background-color: black;
+  color: white;
 }
 </style>
