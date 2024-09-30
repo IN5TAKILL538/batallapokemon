@@ -31,6 +31,9 @@ let statsatksp2 = ref("");
 let statsdfsp2 = ref("");
 let statsspeed2 = ref("");
 
+let contador1 = 0
+let contador2 = 0
+
 function numerospokedex() {
   numeros1.value = []; // Limpia el arreglo antes de llenarlo
   numeros2.value = [];
@@ -89,7 +92,7 @@ async function listarPokemon() {
       stats2.value = statsatk2.value + statsdf2.value + statsatksp2.value + statsdfsp2.value + statsspeed2.value;
 
       i.value++; // Incrementa i después de obtener los datos
-      
+      compararEstadisticas()
     } catch (error) {
       alert("Ocurrió un error al obtener los datos. Por favor, inténtalo de nuevo.");
     }
@@ -138,14 +141,16 @@ function compararEstadisticas() {
   }
 
   if (statPokemon1 > statPokemon2) {
-    ganador = `${nombre.value} gana con ${statPokemon1} ${tipoBatalla}!`;
+    ganador = "${nombre.value} gana con ${statPokemon1} ${tipoBatalla}!";
+    contador1++
   } else if (statPokemon1 < statPokemon2) {
-    ganador = `${nombre2.value} gana con ${statPokemon2} ${tipoBatalla}!`;
+    ganador = '${nombre2.value} gana con ${statPokemon2} ${tipoBatalla}!';
+    contador2++
   } else {
     ganador = "Es un empate!";
   }
-
-  alert(ganador); // Muestra el resultado en un alert
+  
+   // Muestra el resultado en un alert
 }
 </script>
 
@@ -174,11 +179,13 @@ function compararEstadisticas() {
     </div>
     <div class="cuerpo">
       <div class="pokemon" id="poke1">
+        <div><h1>{{ contador1 }}</h1></div>
         <div id="name1">{{ nombre }}</div>
         <img :src="image" alt="" class="imgpoke">
       </div>
       <img src="https://pm1.aminoapps.com/6451/08ef2400e95ad4f34b3f61be0bdf4f66927a6be0_00.jpg" alt="">
       <div class="pokemon" id="poke2">
+        <div><h1>{{ contador2 }}</h1></div>
         <div id="name2">{{ nombre2 }}</div>
         <img :src="image2" alt="" class="imgpoke">
       </div>
