@@ -272,7 +272,7 @@ async function reset() {
 
     </div>
     <div class="resultados" id="resultados">
-      <div class="btnnext"><button id="nextcombat" @click="listarPokemon()">Siguiente Combate</button></div>
+      <div class="btnnext"><button id="nextcombat" @click="listarPokemon()">Next Combate</button></div>
       <button id="resultadolocal">{{ pokeganador }}</button> <br>
       <button id="resultadoglobal">{{ entrenadorganador }}</button>
       <button id="resetear" @click="reset()">RESET</button>
