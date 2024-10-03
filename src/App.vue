@@ -58,6 +58,7 @@ async function listarPokemon() {
   document.getElementById("header").style.display = "none"
   document.getElementById("nextcombat").style.display = "block"
   document.getElementById("resultadolocal").style.display = "block"
+  document.getElementById("resultados").style.display = "flex"
 
 
   // Obtener el número de Pokémon a mostrar
@@ -110,17 +111,19 @@ async function listarPokemon() {
       alert("Ocurrió un error al obtener los datos. Por favor, inténtalo de nuevo.");
     }
   } else {
-    if (contador1 < contador2) {
+    if (contador1 > contador2) {
       entrenadorganador.value = "el Ganador es el entrendor #1"
     }
-    else if (contador1 > contador2) {
+    else if (contador1 < contador2) {
       entrenadorganador.value = "el Ganador es el entrendor #2"
     }
     else {
       entrenadorganador.value = "EMPATE"
     }
-
-
+    document.getElementById("nextcombat").textContent = "Resultado final"
+    document.getElementById("resultadoglobal").style.display = "block"
+    document.getElementById("resetear").style.display = "block"
+    
   }
   function compararEstadisticas() {
     const tipoBatalla = document.getElementById("batalla").value;
@@ -168,18 +171,65 @@ async function listarPokemon() {
       ganador = nombre2.value + ' gana con ' + statPokemon2 + ' ' + tipoBatalla + ' cotra ' + statPokemon1 + ' de ' + nombre.value;
       contador2++
     } else {
-      ganador = "Es un empate!";
+      ganador = "Es un empate! tienes otro intento";
+
     }
     pokeganador.value = ganador
     // Muestra el resultado en un alert
   }
+}
+async function reset() {
+  let mostrar = ref(true)
+  let nomostrar = ref(true)
+
+  nombre = ref("");
+  image = ref("");
+  numpokedex = ref("");
+  stats = ref("");
+
+  nombre2 = ref("");
+  image2 = ref("");
+  numpokedex2 = ref("");
+  stats2 = ref("");
+
+  numeros1 = ref([]);
+  numeros2 = ref([]);
+  numi = ref(0); // Cambia a ref
+  i = ref(0); // Cambia a ref
+
+  statshp = ref("");
+  statsatk = ref("");
+  statsdf = ref("");
+  statsatksp = ref("");
+  statsdfsp = ref("");
+  statsspeed = ref("");
+
+  statshp2 = ref("");
+  statsatk2 = ref("");
+  statsdf2 = ref("");
+  statsatksp2 = ref("");
+  statsdfsp2 = ref("");
+  statsspeed2 = ref("");
+
+  contador1 = 0
+  contador2 = 0
+  pokeganador = ref();
+  entrenadorganador = ref("")
+  document.getElementById("header").style.display = "flex"
+  document.getElementById("iniciar").style.display = "block"
+  document.getElementById("cuerpo").style.display = "none"
+  document.getElementById("poke1").style.display = "none"
+  document.getElementById("poke2").style.display = "none"
+  document.getElementById("resultados").style.display = "none"
+  document.body.style.width = "100%"
+   document.body.style.height = "100vh"
 }
 </script>
 
 <template>
   <div class="contenedor">
     <div class="header" id="header">
-      <img src="" alt="">
+
       <select name="numpokemon" id="numpokemon">
         <option value="1">1</option>
         <option value="2">2</option>
@@ -188,39 +238,45 @@ async function listarPokemon() {
         <option value="5">5</option>
         <option value="6">6</option>
       </select>
-      <select name="tipobatalla" id="batalla">
-        <option value="total">TOTAL</option>
-        <option value="hp">HP</option>
-        <option value="attack">ATAQUE</option>
-        <option value="defense">DEFENSA</option>
-        <option value="special-attack">ATAQUE ESPECIAL</option>
-        <option value="special-defense">DEFENSA ESPECIAL</option>
-        <option value="speed">VELOCIDAD</option>
-      </select>
       <button id="iniciar" @click="listarPokemon()">INICIAR</button>
     </div>
     <div class="cuerpo" id="cuerpo">
+      <div class="selecion">
+
+        <select name="tipobatalla" id="batalla">
+          <option value="total">TOTAL</option>
+          <option value="hp">HP</option>
+          <option value="attack">ATAQUE</option>
+          <option value="defense">DEFENSA</option>
+          <option value="special-attack">ATAQUE ESPECIAL</option>
+          <option value="special-defense">DEFENSA ESPECIAL</option>
+          <option value="speed">VELOCIDAD</option>
+        </select>
+      </div>
       <div class="pokemon" id="poke1">
         <div class="contador" id="contador">
-          <h1>{{ contador1 }}</h1>
+          <h1 class="txtcontador">{{ contador1 }}</h1>
         </div>
-        <div id="name1">{{ nombre }}</div>
+        <div class="contenedorname"><div id="name1">{{ nombre }}</div></div>
         <img :src="image" alt="" class="imgpoke">
       </div>
       <div class="pokemon"><img src="https://i.pinimg.com/originals/38/e6/8c/38e68c4baccbd17cc50aa752810a1301.gif"
           alt="" id="vs"></div>
       <div class="pokemon" id="poke2">
         <div class="contador" id="contador2">
-          <h1>{{ contador2 }}</h1>
+          <h1 class="txtcontador">{{ contador2 }}</h1>
         </div>
-        <div id="name2">{{ nombre2 }}</div>
+        <div class="contenedorname"><div id="name2">{{ nombre2 }}</div></div>
         <img :src="image2" alt="" class="imgpoke">
       </div>
 
     </div>
-    <div class="btnnext"><button id="nextcombat" @click="listarPokemon()">Siguiente Combate</button></div>
-    <button id="resultadolocal">{{ pokeganador }}</button> <br>
-    <button id="resultadoglobal">{{ entrenadorganador }}</button>
+    <div class="resultados" id="resultados">
+      <div class="btnnext"><button id="nextcombat" @click="listarPokemon()">Siguiente Combate</button></div>
+      <button id="resultadolocal">{{ pokeganador }}</button> <br>
+      <button id="resultadoglobal">{{ entrenadorganador }}</button>
+      <button id="resetear" @click="reset()">RESET</button>
+    </div>
   </div>
 </template>
 
@@ -237,6 +293,22 @@ body {
   display: none;
   align-items: center;
   justify-content: center;
+  font-family: cursive;
+}
+.txtcontador{
+  font-family: cursive;
+}
+.contenedorname{
+  display: flex;
+  width: 100%;
+  align-items: center ;
+  justify-content: center;
+  text-align: center;
+}
+.pokemon{
+  align-items: center ;
+  justify-content: center;
+  text-align: center;
 }
 
 .contenedor {
@@ -244,6 +316,28 @@ body {
   width: 100%;
 }
 
+.selecion {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+}
+
+#name1{
+  align-items: center;
+  font-family: cursive;
+  background-color: black;
+  border-radius: 50%;
+  opacity: 0.7;
+  width: 120px;
+}
+#name2{
+  font-family: cursive;
+  background-color: black;
+  border-radius: 50%;
+  opacity: 0.7;
+  width: 120px;
+  }
 #vs {
   height: 60px;
   width: 60px;
@@ -257,6 +351,14 @@ body {
   justify-content: center;
   flex-wrap: wrap;
 }
+.resultados {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
 
 .header {
 
@@ -283,7 +385,12 @@ body {
 
 #nextcombat {
   display: none;
+  font-family: cursive;
 
+}
+
+#resetear {
+  display: none;
 }
 
 .btnnext {
@@ -299,15 +406,17 @@ body {
     height: 120px;
   }
 }
-#resultadolocal{
+
+#resultadolocal {
   display: none;
-  font-family:cursive;
+  font-family: cursive;
   background-color: black;
   color: white;
 }
-#resultadoglobal{
+
+#resultadoglobal {
   display: none;
-  font-family:cursive;
+  font-family: cursive;
   background-color: black;
   color: white;
 }
